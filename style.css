@@ -1,0 +1,54 @@
+ul {
+	list-style: disc;
+	margin-left: 20px; 
+}
+
+a {
+	color:#eeeeee;
+}
+
+.center {
+	text-align:center;
+}
+
+.section {
+	padding:20px;
+}
+
+#header {
+	padding-left:20px;
+	padding-top:20px;
+}
+#header h1 {
+	margin:10px 0 5px;
+	color: #6699CC;
+	font-size:2em;
+	font-weight:bold;
+}
+
+#footer {
+	padding:20px;
+	font-size: 10px;
+	text-align:right;
+}
+
+#search-term {
+	width:200px;
+}
+
+#search-results h2 {
+	margin:10px 0 5px;
+	color: #999;
+	font-weight:bold;
+}
+#search-results .sp-player {
+	float:left;
+	margin-right:10px;
+}
+#search-results .add-playlist {
+	margin-top:20px;
+}
+#search-results .sp-list {
+	width:inherit;
+	max-height:inherit;
+}

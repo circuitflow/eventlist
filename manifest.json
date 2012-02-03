@@ -1,0 +1,15 @@
+{
+	"BundleType": "Application",
+	"AppIcon": {
+		"36x18": "icon.png"
+	},
+	"AppName": {
+		"en": "EventList"
+	},
+	"SupportedLanguages": [
+		"en"
+	],
+	"RequiredPermissions": [
+		"http://api.songkick.com"
+	]
+}
