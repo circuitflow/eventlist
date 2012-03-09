@@ -19,13 +19,24 @@ var cityPlaylistList = new views.List(cityPlaylist);
 $(function(){
 	
 	$("button").click(function(e){
-		var query = $("#search-term").val();
 		var type = $(this).attr("id");
+		var dateRangeFrom = $("#from").val();
+		var dateRangeTo = $("#to").val();
+		var query = $("#search-term").val();
 		if (query !== "") {
 			switch (type) {
 				case "search-user":
 					var userArtists = [];
-					var userUrl = songkick_url + "/users/" + query + "/calendar.json?reason=attendance&apikey=" + songkick_apikey + "&jsoncallback=?";	
+					var userUrl;
+					
+					if (dateRangeFrom !== "" && dateRangeTo !== "") {
+						userUrl = songkick_url + "/users/" + query + "/events.json?attendance=all" + "&min_date=" + dateRangeFrom + "&max_date=" + dateRangeTo + "&apikey=" + songkick_apikey + "&jsoncallback=?";
+					} else {
+						// var userUrl = songkick_url + "/users/" + query + "/calendar.json?reason=attendance&apikey=" + songkick_apikey + "&jsoncallback=?";
+						userUrl = songkick_url + "/users/" + query + "/events.json?attendance=all&apikey=" + songkick_apikey + "&jsoncallback=?";
+					}
+					console.log(userUrl);
+					
 					var userSaveButton = "<button id='saveUserPlaylist' class='add-playlist button icon'>Save As Playlist</button>";
 					var userPlaylistArt = new views.Player();
 					
@@ -41,18 +52,15 @@ $(function(){
 							$("#search-results").append(userPlaylistArt.node);
 							$("#search-results .sp-player").append(userSaveButton);
 							$("#search-results").append(userPlaylistList.node);
-					
-							var calendarEntries = data.resultsPage.results.calendarEntry;
-							for (var i = 0; i < calendarEntries.length; i++) {
-								if (calendarEntries[i].reason.trackedArtist) {
-									var trackedArtists = calendarEntries[i].reason.trackedArtist;
-									for (var j = 0; j < trackedArtists.length; j++) {
-										userArtists.push(trackedArtists[j].displayName);
-									}
-								} else {
-									var performers = calendarEntries[i].event.performance;
-									for (var k = 0; k < performers.length; k++) {
-										userArtists.push(performers[k].artist.displayName);
+							
+							var userEvents = data.resultsPage.results.event;
+							for (var i = 0; i < userEvents.length; i++) {
+								if (userEvents[i].performance) {
+									var performers = userEvents[i].performance;
+									for (var j = 0; j < performers.length; j++) {
+										if (!userArtists.inArray(performers[j].artist.displayName)) {
+											userArtists.push(performers[j].artist.displayName);
+										}
 									}
 								}
 							}
@@ -86,14 +94,20 @@ $(function(){
 					});
 					cityQuery.complete(function() {
 						if (cityId) {
+							var cityEventUrl;
+							
 							$("#search-results").append("<h2 id='city'>" + query + "</h2>");
 							$("#search-results").append(cityPlaylistArt.node);
 							$("#search-results .sp-player").append(citySaveButton);
 							$("#search-results").append(cityPlaylistList.node);
-					
-							var cityEventUrl = songkick_url + "/metro_areas/" + cityId + "/calendar.json?apikey=" + songkick_apikey + "&jsoncallback=?";
-							// cityEventUrl = songkick_url + "/events.json?apikey=" + songkick_apikey + "&location=sk:" + cityId + "&min_date=" + dateRange[0] + "&max_date=" + dateRange[1] + "&jsoncallback=?";
-			
+							
+							if (dateRangeFrom !== "" && dateRangeTo !== "") {
+								cityEventUrl = songkick_url + "/events.json?apikey=" + songkick_apikey + "&location=sk:" + cityId + "&min_date=" + dateRangeFrom + "&max_date=" + dateRangeTo + "&jsoncallback=?";
+							} else {
+								cityEventUrl = songkick_url + "/metro_areas/" + cityId + "/calendar.json?apikey=" + songkick_apikey + "&jsoncallback=?";
+							}
+							console.log(cityEventUrl);
+							
 							var cityEventsQuery = $.getJSON(cityEventUrl, function(data) {
 								if (data && data.resultsPage.totalEntries > 0) {
 									var cityEvents = data.resultsPage.results.event;
@@ -138,7 +152,24 @@ $(function(){
 		});
 		e.preventDefault();
 	});	
-
+	
+	
+	
+	var dates = $( "#from, #to" ).datepicker({
+		defaultDate: "+1w",
+		changeMonth: true,
+		numberOfMonths: 1,
+		onSelect: function( selectedDate ) {
+			var option = this.id == "from" ? "minDate" : "maxDate",
+				instance = $( this ).data( "datepicker" ),
+				date = $.datepicker.parseDate(
+					instance.settings.dateFormat ||
+					$.datepicker._defaults.dateFormat,
+					selectedDate, instance.settings );
+			dates.not( this ).datepicker( "option", option, date );
+		}
+	});
+	$( "#from, #to" ).datepicker( "option", "dateFormat", 'yy-mm-dd' );
 });
 
 /*
@@ -154,7 +185,7 @@ function getTracks(artist, playlist) {
 				playlist.add(models.Track.fromURI(track.uri));
 			});				
 		} else {
-			// console.log('No tracks in results: ', artist);
+			console.log('No tracks in results: ', artist);
 		}
 	});
 	search.appendNext();

@@ -6,9 +6,14 @@
 	<!-- <link rel="stylesheet" href="sp://import/css/eve.css"> -->
 	<link rel="stylesheet" href="sp://import/css/adam.css">
     <link rel="stylesheet" href="sp://import/css/api.css">
-	<link rel="stylesheet" href="style.css">
-	<script type="text/javascript" src="jquery-1.7.1.min.js"></script>
-	<script type="text/javascript" src="events.js"></script>
+
+	<link type="text/css" href="css/cupertino/jquery-ui-1.8.18.custom.css" rel="stylesheet" />	
+	<script type="text/javascript" src="js/jquery-1.7.1.min.js"></script>
+	<script type="text/javascript" src="js/jquery-ui-1.8.18.custom.min.js"></script>
+
+	<link rel="stylesheet" href="css/style.css">
+	<script type="text/javascript" src="js/events.js"></script>
+
 </head>
 <body>
 	<div id="header">
@@ -16,9 +21,36 @@
 		<h2>An Upcoming Events Playlist Generator</h2>
 	</div>
 	<div id="search" class="section">
-		<input type="text" id="search-term" value="circuitflow">
-		<button id="search-user">User Search</button>
-		<button id="search-city">City Search</button>
+		<table>
+			<tr>
+				<td>
+					<label for="search-term">Songkick Username / City</label>
+				</td>
+				<td>
+					<label for="from">From</label>
+				</td>
+				<td>
+					<label for="to">To</label>
+				</td>
+				<td></td>
+			</tr>
+			<tr>
+				<td>
+					<input type="text" id="search-term" class="input" value="circuitflow">
+				</td>
+				<td>
+					<input type="text" id="from" class="input" name="from"/>
+				</td>
+				<td>
+					<input type="text" id="to" class="input" name="to"/>
+				</td>
+				<td>
+					<button id="search-user" class='button icon'>User Search</button>
+					<button id="search-city" class='button icon'>City Search</button>
+				</td>
+			</tr>
+		</table>
+
 		<div id="search-results"></div>
 	</div>
 	<div id="footer">
