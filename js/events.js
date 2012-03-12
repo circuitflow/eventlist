@@ -134,6 +134,66 @@ $(function(){
 						}
 					});
 				break;
+				case "search-venue":
+					var venueId = "";
+					var venueArtists = [];
+					var venueUrl = songkick_url + "/search/venues.json?query=" + query + "&apikey=" + songkick_apikey + "&jsoncallback=?";
+					var venueSaveButton = "<button id='saveVenuePlaylist' class='add-playlist button icon'>Save As Playlist</button>";
+					var venuePlaylistArt = new views.Player();
+					
+					$("#search-results").empty();
+					venuePlaylist = new models.Playlist();
+					venuePlaylistList = new views.List(venuePlaylist);
+					venuePlaylistList.node.classList.add("temporary");
+					venuePlaylistArt.context = venuePlaylist;			
+							
+					var venueQuery = $.getJSON(venueUrl, function(data) {
+						if (data && data.resultsPage.totalEntries > 0 && data.resultsPage.results.venue) {
+							venueId = data.resultsPage.results.venue[0].id;
+						}
+					});
+					venueQuery.complete(function() {
+						if (venueId) {
+							var venueEventUrl;
+							
+							$("#search-results").append("<h2 id='venue'>" + query + "</h2>");
+							$("#search-results").append(venuePlaylistArt.node);
+							$("#search-results .sp-player").append(venueSaveButton);
+							$("#search-results").append(venuePlaylistList.node);
+							
+							if (dateRangeFrom !== "" && dateRangeTo !== "") {
+								venueEventUrl = songkick_url + "/venues/" + venueId + "/calendar.json?apikey=" + songkick_apikey + "&min_date=" + dateRangeFrom + "&max_date=" + dateRangeTo + "&jsoncallback=?";
+							} else {
+								venueEventUrl = songkick_url + "/venues/" + venueId + "/calendar.json?apikey=" + songkick_apikey + "&jsoncallback=?";
+							}
+							console.log(venueEventUrl);
+							
+							var venueEventsQuery = $.getJSON(venueEventUrl, function(data) {
+								if (data && data.resultsPage.totalEntries > 0) {
+									var venueEvents = data.resultsPage.results.event;
+									for (var i = 0; i < venueEvents.length; i++) {
+										if (venueEvents[i].performance) {
+											var performers = venueEvents[i].performance;
+											for (var j = 0; j < performers.length; j++) {
+												if (!venueArtists.inArray(performers[j].artist.displayName)) {
+													venueArtists.push(performers[j].artist.displayName);
+												}
+											}
+										}
+									}
+								}
+							});
+		
+							venueEventsQuery.complete(function() {
+								for (var i = 0; i < venueArtists.length; i++) {
+									getTracks(venueArtists[i], venuePlaylist); 
+								}
+							});
+						} else {
+							$("#search-results").append("<h2>Venue not found.</h2>");
+						}
+					});
+				break;					
 			}
 		}
 	});
@@ -145,15 +205,19 @@ $(function(){
 		e.preventDefault();
 	});
 	$("#saveCityPlaylist").live('click',function(e){
-		console.log('save');
 		var myCityPlaylist = new models.Playlist("Upcoming Events for " + $("#city").text() + ": " + getDate());
 		$.each(cityPlaylist.data.all(),function(i,track){
 			myCityPlaylist.add(track);
 		});
 		e.preventDefault();
 	});	
-	
-	
+	$("#saveVenuePlaylist").live('click',function(e){
+		var myVenuePlaylist = new models.Playlist("Upcoming Events for " + $("#venue").text() + ": " + getDate());
+		$.each(venuePlaylist.data.all(),function(i,track){
+			myVenuePlaylist.add(track);
+		});
+		e.preventDefault();
+	});	
 	
 	var dates = $( "#from, #to" ).datepicker({
 		defaultDate: "+1w",

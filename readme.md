@@ -6,6 +6,7 @@ The EventList Spotify App connects to the Songkick API to allow the user to easi
 
 * Generate a playlist based on your upcoming Songkick events.
 * Generate a playlist based on upcoming events in a specific city.
+* Generate a playlist based on upcoming events in a specific venue.
 
 ### Contact
 
