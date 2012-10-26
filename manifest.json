@@ -1,7 +1,10 @@
 {
 	"BundleType": "Application",
+	"BundleIdentifier": "eventlist",
 	"AppIcon": {
-		"36x18": "icon.png"
+		"18x18": "img/icon16.png",
+		"64x64": "img/icon64.png",
+		"128x128": "img/icon128.png"
 	},
 	"AppName": {
 		"en": "EventList"

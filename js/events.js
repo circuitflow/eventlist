@@ -35,7 +35,7 @@ $(function(){
 						// var userUrl = songkick_url + "/users/" + query + "/calendar.json?reason=attendance&apikey=" + songkick_apikey + "&jsoncallback=?";
 						userUrl = songkick_url + "/users/" + query + "/events.json?attendance=all&apikey=" + songkick_apikey + "&jsoncallback=?";
 					}
-					console.log(userUrl);
+					// console.log(userUrl);
 					
 					var userSaveButton = "<button id='saveUserPlaylist' class='add-playlist button icon'>Save As Playlist</button>";
 					var userPlaylistArt = new views.Player();
@@ -106,7 +106,7 @@ $(function(){
 							} else {
 								cityEventUrl = songkick_url + "/metro_areas/" + cityId + "/calendar.json?apikey=" + songkick_apikey + "&jsoncallback=?";
 							}
-							console.log(cityEventUrl);
+							// console.log(cityEventUrl);
 							
 							var cityEventsQuery = $.getJSON(cityEventUrl, function(data) {
 								if (data && data.resultsPage.totalEntries > 0) {
@@ -166,7 +166,7 @@ $(function(){
 							} else {
 								venueEventUrl = songkick_url + "/venues/" + venueId + "/calendar.json?apikey=" + songkick_apikey + "&jsoncallback=?";
 							}
-							console.log(venueEventUrl);
+							// console.log(venueEventUrl);
 							
 							var venueEventsQuery = $.getJSON(venueEventUrl, function(data) {
 								if (data && data.resultsPage.totalEntries > 0) {
@@ -249,7 +249,7 @@ function getTracks(artist, playlist) {
 				playlist.add(models.Track.fromURI(track.uri));
 			});				
 		} else {
-			console.log('No tracks in results: ', artist);
+			// console.log('No tracks in results: ', artist);
 		}
 	});
 	search.appendNext();
